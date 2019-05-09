@@ -1,0 +1,32 @@
+{
+  "name": "react-audio-timeline",
+  "description": "react-audio-timeline",
+  "version": "0.0.0",
+  "author": "Yasuaki Uechi <y@uechi.io> (https://uechi.io/)",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "load-asset": "^1.2.0",
+    "react": "^16.8.6",
+    "standardized-audio-context": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.8.17",
+    "typescript": "^3.4.5"
+  },
+  "bugs": {
+    "url": "https://github.com/uetchy/react-audio-timeline/issues"
+  },
+  "homepage": "https://github.com/uetchy/react-audio-timeline",
+  "keywords": [
+    "react-audio-timeline"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uetchy/react-audio-timeline.git"
+  }
+}
