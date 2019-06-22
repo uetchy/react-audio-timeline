@@ -1,18 +1,42 @@
-export interface ITimelineEvent {
+export interface TimelineEventObject {
   targetTime: number
   callback: () => object
 }
 
-export class Timeline {
-  timelineEventGroup: TimelineEvent[]
+export class TimelineEvent {
+  private emitted: boolean
+  private targetTime: number
+  private callback: () => object
 
-  constructor(timelineEvents: ITimelineEvent[]) {
+  public constructor(targetTime: number, callback: () => object) {
+    this.targetTime = targetTime
+    this.callback = callback
+    this.emitted = false
+  }
+
+  public checkForState(time: number): object | null {
+    if (this.emitted == true) {
+      return null
+    }
+    if (time >= this.targetTime) {
+      this.emitted = true
+      return this.callback()
+    }
+    return null
+  }
+}
+
+export class Timeline {
+  private timelineEventGroup: TimelineEvent[]
+
+  public constructor(timelineEvents: TimelineEventObject[]) {
     this.timelineEventGroup = timelineEvents.map(
-      (event) => new TimelineEvent(event.targetTime, event.callback)
+      (event): TimelineEvent =>
+        new TimelineEvent(event.targetTime, event.callback)
     )
   }
 
-  getState(deltaTime: number, state: object) {
+  public getState(deltaTime: number, state: object): object {
     let newState = state
     for (const timeEvent of this.timelineEventGroup) {
       const partialState = timeEvent.checkForState(deltaTime)
@@ -21,24 +45,5 @@ export class Timeline {
       }
     }
     return newState
-  }
-}
-
-export class TimelineEvent {
-  emitted: boolean
-
-  constructor(private targetTime: number, private callback: () => object) {
-    this.emitted = false
-  }
-
-  checkForState(time: number) {
-    if (this.emitted == true) {
-      return false
-    }
-    if (time >= this.targetTime) {
-      this.emitted = true
-      return this.callback()
-    }
-    return false
   }
 }

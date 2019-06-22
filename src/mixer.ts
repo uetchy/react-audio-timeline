@@ -4,8 +4,8 @@ import {
   IAudioBufferSourceNode,
 } from 'standardized-audio-context'
 
-interface INode {
-  source: IAudioBufferSourceNode
+interface Node {
+  source: IAudioBufferSourceNode<IAudioContext>
   name: string
   start: number
   offset: number
@@ -13,7 +13,7 @@ interface INode {
   onTimeUpdate: (currentTime: number) => void
 }
 
-export interface ISource {
+export interface AudioSource {
   buffer: ArrayBuffer
   name: string
   onTimeUpdate: (time: number) => void
@@ -21,30 +21,30 @@ export interface ISource {
 }
 
 export default class AudioMixer {
-  AudioContext: IAudioContext
-  reqFrame: number
-  nodes: INode[]
+  public AudioContext: IAudioContext
+  private reqFrame: number
+  private nodes: Node[]
 
-  constructor() {
+  public constructor() {
     this.AudioContext = new AudioContext()
     this.nodes = []
     this.reqFrame = requestAnimationFrame(this.onTimeUpdate)
     this.onTimeUpdate = this.onTimeUpdate.bind(this)
   }
 
-  resume() {
+  public resume(): Promise<void> {
     return this.AudioContext.resume()
   }
 
-  isRunning() {
+  public isRunning(): boolean {
     return this.AudioContext.state === 'running'
   }
 
-  async addSource(args: ISource) {
+  public async addSource(args: AudioSource): Promise<Node> {
     const audioBuffer = await this.AudioContext.decodeAudioData(args.buffer)
     const bufferSource = this.AudioContext.createBufferSource()
 
-    const node: INode = {
+    const node: Node = {
       source: bufferSource,
       name: args.name,
       start: 0,
@@ -53,7 +53,7 @@ export default class AudioMixer {
       onTimeUpdate: args.onTimeUpdate,
     }
 
-    bufferSource.onended = () => {
+    bufferSource.onended = (): void => {
       node.source.stop()
       node.offset = 0
       node.isPlaying = false
@@ -66,7 +66,7 @@ export default class AudioMixer {
     return node
   }
 
-  async play(name: string, startPosition: number = 0) {
+  public async play(name: string, startPosition: number = 0): Promise<void> {
     const node = this._getNode(name)
     if (!node) {
       return
@@ -77,7 +77,7 @@ export default class AudioMixer {
     node.isPlaying = true
   }
 
-  stop(name: string) {
+  public stop(name: string): void {
     const node = this._getNode(name)
     if (!node) {
       return
@@ -87,7 +87,7 @@ export default class AudioMixer {
     node.isPlaying = false
   }
 
-  stopAll() {
+  public stopAll(): void {
     for (const node of this.nodes) {
       if (node.isPlaying) {
         node.source.stop()
@@ -97,7 +97,7 @@ export default class AudioMixer {
     }
   }
 
-  onTimeUpdate() {
+  public onTimeUpdate(): void {
     for (const node of this.nodes) {
       if (node.isPlaying) {
         const currentTime =
@@ -108,7 +108,7 @@ export default class AudioMixer {
     this.reqFrame = requestAnimationFrame(this.onTimeUpdate)
   }
 
-  _getNode(name: string) {
-    return this.nodes.find((node: INode) => node.name === name)
+  private _getNode(name: string): Node | undefined {
+    return this.nodes.find((node: Node): boolean => node.name === name)
   }
 }

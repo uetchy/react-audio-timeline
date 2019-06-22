@@ -5,21 +5,30 @@
   "author": "Yasuaki Uechi <y@uechi.io> (https://uechi.io/)",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
     "load-asset": "^1.2.0",
     "react": "^16.8.6",
-    "standardized-audio-context": "^19.1.1"
+    "standardized-audio-context": "^20.1.6"
   },
   "devDependencies": {
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.8.17",
-    "typescript": "^3.4.5"
+    "@types/node": "^12.0.10",
+    "@types/react": "^16.8.22",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-plugin-jest": "^22.7.0",
+    "typescript": "^3.5.2"
   },
   "bugs": {
     "url": "https://github.com/uetchy/react-audio-timeline/issues"
   },
+  "files": [
+    "lib/*.js",
+    "lib/*.d.ts"
+  ],
   "homepage": "https://github.com/uetchy/react-audio-timeline",
   "keywords": [
     "react-audio-timeline"
